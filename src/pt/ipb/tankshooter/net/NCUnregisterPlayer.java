@@ -1,0 +1,17 @@
+package pt.ipb.tankshooter.net;
+
+import java.io.Serializable;
+
+@SuppressWarnings("serial")
+public class NCUnregisterPlayer implements Serializable {
+	NetworkPlayer player;
+	
+	public NCUnregisterPlayer(NetworkPlayer player) {
+		this.player = player;
+	}
+
+	public NetworkPlayer getPlayer() {
+		return player;
+	}
+
+}
