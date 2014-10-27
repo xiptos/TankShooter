@@ -1,7 +1,7 @@
 package pt.ipb.tankshooter;
 
 import pt.ipb.game.engine.Command;
-import pt.ipb.tankshooter.net.NCUpdatePlayer;
+import pt.ipb.tankshooter.net.Player;
 
 public class UpdateTankCommand implements Command {
 	TankEntity tank;
@@ -9,11 +9,11 @@ public class UpdateTankCommand implements Command {
 	double y;
 	double angle;
 
-	public UpdateTankCommand(TankEntity tank, NCUpdatePlayer obj) {
+	public UpdateTankCommand(TankEntity tank, Player player) {
 		this.tank = tank;
-		this.x = obj.getX();
-		this.y = obj.getY();
-		this.angle = obj.getAngle();
+		this.x = player.getX();
+		this.y = player.getY();
+		this.angle = player.getAngle();
 	}
 
 	@Override

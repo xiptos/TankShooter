@@ -2,14 +2,10 @@ package pt.ipb.tankshooter;
 
 import java.awt.BorderLayout;
 import java.awt.Image;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
 import java.util.Random;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import javax.imageio.ImageIO;
 import javax.swing.JFrame;
@@ -18,15 +14,14 @@ import javax.swing.JPanel;
 
 import pt.ipb.game.engine.GameLoop;
 import pt.ipb.game.engine.PaneledGameContainer;
-import pt.ipb.tankshooter.net.NetUcastInputHandler;
 import pt.ipb.tankshooter.net.NetworkEvent;
 import pt.ipb.tankshooter.net.NetworkListener;
-import pt.ipb.tankshooter.net.NetworkPlayer;
 import pt.ipb.tankshooter.net.NetworkPlayers;
+import pt.ipb.tankshooter.net.Player;
 import pt.ipb.tankshooter.net.PlayerManager;
 import pt.ipb.tankshooter.net.PlayersPanel;
 
-public class TankShooter implements ActionListener, NetworkListener {
+public class TankShooter implements NetworkListener {
 	private final static int HEIGHT = 600;
 	private final static int WIDTH = 1024;
 	private final static String BACKGROUND = "pt/ipb/tankshooter/resources/background";
@@ -37,7 +32,7 @@ public class TankShooter implements ActionListener, NetworkListener {
 	PlayerManager playerManager;
 	PlayersPanel playersPanel;
 	KeyInputHandler keyInputHandler;
-	NetUcastInputHandler netInputHandler;
+	NetInputHandler netInputHandler;
 
 	public TankShooter() {
 		try {
@@ -57,15 +52,22 @@ public class TankShooter implements ActionListener, NetworkListener {
 		if (name == null) {
 			name = networkPlayers.getNetworkID();
 		}
-		networkPlayers.register(name);
+		Player player = new Player(name);
+		networkPlayers.enterGame(player);
+		game.addTank(player);
+		game.setTank(game.getTank(player));
+		keyInputHandler = new KeyInputHandler(game, game.getTank(player));
+
+		gameContainer.addKeyListener(keyInputHandler);
+		gameContainer.addInputHandler(keyInputHandler);
+
 	}
 
 	private void initNetwork() throws Exception {
 		playerManager = new PlayerManager();
 		networkPlayers = new NetworkPlayers(playerManager);
 		playersPanel = new PlayersPanel(playerManager);
-		playersPanel.addActionListener(this);
-		networkPlayers.addNetworkListener(playersPanel);
+		networkPlayers.addNetworkListener(netInputHandler);
 		networkPlayers.addNetworkListener(this);
 		networkPlayers.start();
 	}
@@ -77,6 +79,9 @@ public class TankShooter implements ActionListener, NetworkListener {
 		game = new TankShooterGame(background);
 		gameContainer = new PaneledGameContainer(WIDTH, HEIGHT);
 		gameContainer.init(new GameLoop(), game);
+
+		netInputHandler = new NetInputHandler(game);
+		gameContainer.addInputHandler(netInputHandler);
 	}
 
 	private void initFrame(int width, int height) {
@@ -112,70 +117,26 @@ public class TankShooter implements ActionListener, NetworkListener {
 	 *            The arguments that are passed into our game
 	 */
 	public static void main(String argv[]) {
-		for(int i=0; i<5; i++)
-		new TankShooter();
-	}
-
-	@Override
-	public void actionPerformed(ActionEvent e) {
-		try {
-			networkPlayers.sendStartGame();
-		} catch (Exception e1) {
-			e1.printStackTrace();
-		}
-		start();
+		for (int i = 0; i < 1; i++)
+			new TankShooter().start();
 	}
 
 	public void start() {
-		try {
-			Thread.sleep(1000);
-		} catch (InterruptedException e) {
-		}
-		NetworkPlayer myPlayer = playerManager.getMyPlayer();
-		for (NetworkPlayer player : playerManager.getPlayers().values()) {
-			game.addTank(player);
-		}
-		networkPlayers.stop();
-		try {
-
-			TankEntity tank = game.getTank(myPlayer);
-			game.setTank(tank);
-			netInputHandler = new NetUcastInputHandler(game, networkPlayers.getClusterName());
-			Timer timer = new Timer();
-			timer.scheduleAtFixedRate(new TimerTask() {
-				
-				@Override
-				public void run() {
-					try {
-						netInputHandler.sendUpdate(tank);
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
-				}
-			}, 1000, 100);
-			
-			keyInputHandler = new KeyInputHandler(game, tank);
-			gameContainer.addKeyListener(keyInputHandler);
-			gameContainer.addInputHandler(keyInputHandler);
-			gameContainer.addInputHandler(netInputHandler);
-
-			gameContainer.start();
-		} catch (Exception e1) {
-			e1.printStackTrace();
-		}
-
+		gameContainer.start();
 	}
 
 	@Override
-	public void playerRegistered(NetworkEvent e) {
+	public void playerEntered(NetworkEvent e) {
+		game.addTank(e.getPlayer());
 	}
 
 	@Override
-	public void playerUnregistered(NetworkEvent e) {
+	public void playerExited(NetworkEvent e) {
+		game.removeTank(e.getPlayer());
 	}
 
 	@Override
-	public void gameStarted(NetworkEvent e) {
-		start();
+	public void playerUpdated(NetworkEvent e) {
 	}
+
 }

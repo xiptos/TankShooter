@@ -9,10 +9,10 @@ import javax.swing.ListCellRenderer;
 import javax.swing.SwingConstants;
 
 import pt.ipb.game.engine.SpriteSheet;
-import pt.ipb.tankshooter.net.NetworkPlayer;
+import pt.ipb.tankshooter.net.Player;
 
 @SuppressWarnings("serial")
-public class PlayersListRenderer extends JLabel implements ListCellRenderer<NetworkPlayer> {
+public class PlayersListRenderer extends JLabel implements ListCellRenderer<Player> {
 
 	private SpriteSheet spriteSheet;
 
@@ -28,7 +28,7 @@ public class PlayersListRenderer extends JLabel implements ListCellRenderer<Netw
 	 * This method finds the image and text corresponding to the selected value
 	 * and returns the label, set up to display the text and image.
 	 */
-	public Component getListCellRendererComponent(JList<? extends NetworkPlayer> list, NetworkPlayer value, int index,
+	public Component getListCellRendererComponent(JList<? extends Player> list, Player value, int index,
 			boolean isSelected, boolean cellHasFocus) {
 		if (isSelected) {
 			setBackground(list.getSelectionBackground());
@@ -40,9 +40,9 @@ public class PlayersListRenderer extends JLabel implements ListCellRenderer<Netw
 
 		if (value != null) {
 			// Set the icon and text. If icon was null, say so.
-			ImageIcon icon = new ImageIcon(spriteSheet.getSprite(0, value.getNum()).getFrame());
+			ImageIcon icon = new ImageIcon(spriteSheet.getSprite(0, index).getFrame());
 
-			String pet = value.getName();
+			String pet = value.getId();
 			setIcon(icon);
 			if (icon != null) {
 				setText(pet);

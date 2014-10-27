@@ -5,9 +5,9 @@ import java.util.EventObject;
 @SuppressWarnings("serial")
 public class NetworkEvent extends EventObject {
 
-    private NetworkPlayer player;
+    private Player player;
 
-	public NetworkEvent(Object source, NetworkPlayer player) {
+	public NetworkEvent(Object source, Player player) {
         super(source);
         this.player = player;
     }
@@ -16,7 +16,7 @@ public class NetworkEvent extends EventObject {
 		super(source);
 	}
 
-	public NetworkPlayer getPlayer() {
+	public Player getPlayer() {
 		return player;
 	}
 }

@@ -1,72 +1,70 @@
 package pt.ipb.tankshooter.net;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.AbstractListModel;
 
-import org.jgroups.Address;
-
 @SuppressWarnings("serial")
-public class PlayerManager extends AbstractListModel<NetworkPlayer> {
-	Map<Integer, NetworkPlayer> players;
-	private NetworkPlayer myPlayer;
+public class PlayerManager extends AbstractListModel<Player> {
+	List<Player> players;
+	private Player myPlayer;
 	
 	public PlayerManager() {
-		players = new HashMap<Integer, NetworkPlayer>();
+		players = new ArrayList<>();
 	}
 
-	public synchronized  void addPlayer(NetworkPlayer player) {
-		players.put(player.getNum(), player);
-		fireIntervalAdded(this, player.getNum(), player.getNum());
+	public synchronized  void addPlayer(Player player) {
+		players.add(player);
+		fireIntervalAdded(this, players.size()-1, players.size()-1);
 	}
 
-	public synchronized  void removePlayer(NetworkPlayer player) {
-		players.remove(player.getNum());
-		fireIntervalRemoved(this, player.getNum(), player.getNum());
+	public synchronized  void removePlayer(Player player) {
+		int index = players.indexOf(player);
+		players.remove(index);
+		fireIntervalRemoved(this, index, index);
 	}
 	
-	public NetworkPlayer createPlayer(String id, String name, Address address) {
-		if (players.size() > 9) {
-			return null;
-		}
-		int currentTank = 0;
-		for(int i=0; i<10; i++) {
-			if(!players.containsKey(i)) {
-				currentTank = i;
-				break;
-			}
-		}
-		NetworkPlayer player = new NetworkPlayer(id, name, currentTank, address);
-
-		return player;
-	}
-
 	@Override
 	public int getSize() {
 		return players.size();
 	}
 
 	@Override
-	public synchronized NetworkPlayer getElementAt(int index) {
+	public synchronized Player getElementAt(int index) {
 		return players.get(index);
 	}
 
-	public synchronized Map<Integer, NetworkPlayer> getPlayers() {
+	public synchronized List<Player> getPlayers() {
 		return players;
 	}
 
-	public synchronized void setPlayers(Map<Integer, NetworkPlayer> players) {
+	public synchronized void setPlayers(List<Player> players) {
 		this.players = players;
 		fireContentsChanged(this, 0, players.size()-1);
 	}
 
-	public NetworkPlayer getMyPlayer() {
+	public Player getMyPlayer() {
 		return myPlayer;
 	}
 	
-	public void setMyPlayer(NetworkPlayer myPlayer) {
+	public void setMyPlayer(Player myPlayer) {
 		this.myPlayer = myPlayer;
 	}
 
+	public void updatePlayer(Player player) {
+		int index = players.indexOf(player);
+		if(index>=0) {
+			Player existingPlayer = players.get(index);
+			existingPlayer.setAngle(player.getAngle());
+			existingPlayer.setX(player.getX());
+			existingPlayer.setY(player.getY());
+			existingPlayer.setPoints(player.getPoints());
+			fireContentsChanged(this, index, index);
+		}
+	}
+
+	public int getIndexOf(Player player) {
+		return players.indexOf(player);
+	}
 }

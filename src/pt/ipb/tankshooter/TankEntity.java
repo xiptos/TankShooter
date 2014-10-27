@@ -17,9 +17,9 @@ public class TankEntity extends Entity {
 	 * @param x The initial x location of the player's ship
 	 * @param y The initial y location of the player's ship
 	 */
-	public TankEntity(String name, int num, TankShooterGame game,Sprite[] tankSprites,int x,int y) {
-		super(name, tankSprites,x,y);
-		this.name = name;
+	public TankEntity(String id, int num, TankShooterGame game,Sprite[] tankSprites,int x,int y) {
+		super(id, tankSprites,x,y);
+		this.name = id;
 		this.game = game;
 		this.num = num;
 	}
