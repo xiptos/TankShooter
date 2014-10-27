@@ -2,12 +2,12 @@ package pt.ipb.tankshooter;
 
 import pt.ipb.game.engine.Entity;
 import pt.ipb.game.engine.Sprite;
+import pt.ipb.tankshooter.net.Player;
 
 public class TankEntity extends Entity {
 	/** The game in which the ship exists */
 	private TankShooterGame game;
-	private String name;
-	private int num;
+	Player player;
 	
 	/**
 	 * Create a new entity to represent the players ship
@@ -17,16 +17,11 @@ public class TankEntity extends Entity {
 	 * @param x The initial x location of the player's ship
 	 * @param y The initial y location of the player's ship
 	 */
-	public TankEntity(String id, int num, TankShooterGame game,Sprite[] tankSprites,int x,int y) {
-		super(id, tankSprites,x,y);
-		this.name = id;
-		this.game = game;
-		this.num = num;
+	public TankEntity(Player player, TankShooterGame game,Sprite[] tankSprites,int x,int y) {
+		super(player.getId(), tankSprites,x,y);
+		this.player = player;
 	}
 	
-	public int getNum() {
-		return num;
-	}
 	
 	/**
 	 * Request that the ship move itself based on an elapsed ammount of
@@ -55,6 +50,9 @@ public class TankEntity extends Entity {
 		}
 
 		super.move(moveSpeed);
+		player.setAngle(getAngle());
+		player.setX(getX());
+		player.setY(getY());
 	}
 	
 	/**
@@ -70,7 +68,8 @@ public class TankEntity extends Entity {
 		}
 	}
 
-	public String getName() {
-		return name;
+	public Player getPlayer() {
+		return player;
 	}
+
 }

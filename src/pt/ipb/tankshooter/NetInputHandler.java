@@ -41,6 +41,37 @@ public class NetInputHandler implements NetworkListener, InputHandler {
 		TankEntity tank = game.getTank(player.getId());
 		synchronized (commandList) {
 			commandList.add(new UpdateTankCommand(tank, player));
+			switch (e.getCommand()) {
+			case TURN_LEFT:
+				commandList.add(new TurnLeftCommand(tank, -TankShooterGame.ANGLE_SPEED));
+				;
+				break;
+			case TURN_RIGHT:
+				commandList.add(new TurnRightCommand(tank, TankShooterGame.ANGLE_SPEED));
+				;
+				break;
+			case FW:
+				commandList.add(new ForwardCommand(tank, TankShooterGame.MOVE_SPEED));
+				;
+				break;
+			case STOP_TURN_LEFT:
+				commandList.add(new TurnLeftCommand(tank, 0));
+				;
+				break;
+			case STOP_TURN_RIGHT:
+				commandList.add(new TurnRightCommand(tank, 0));
+				;
+				break;
+			case STOP:
+				commandList.add(new ForwardCommand(tank, 0));
+				;
+				break;
+			case FIRE:
+				commandList.add(new FireCommand(game, tank));
+				;
+				break;
+
+			}
 		}
 	}
 }

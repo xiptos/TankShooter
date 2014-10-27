@@ -13,7 +13,7 @@ public class TurnRightCommand implements Command {
 
 	@Override
 	public void execute() {
-		tank.rotate(angle);
+		tank.setAngleSpeed(angle);
 	}
 
 }

@@ -40,6 +40,7 @@ public abstract class Entity {
 	private Rectangle me = new Rectangle();
 	/** The rectangle used for other entities during collision resolution */
 	private Rectangle him = new Rectangle();
+	private double angleSpeed;
 
 	public Entity(Sprite[] sprites, int x, int y) {
 		this(null, sprites, x, y);
@@ -96,6 +97,8 @@ public abstract class Entity {
 	 *            The ammount of time that has passed in milliseconds
 	 */
 	public void move(double moveSpeed) {
+		this.angle = (this.angle + angleSpeed) % (2 * Math.PI);
+
 		// update the location of the entity based on move speeds
 		double dx = Math.cos(angle) * speed;
 		double dy = Math.sin(angle) * speed;
@@ -130,6 +133,10 @@ public abstract class Entity {
 	 */
 	public void setSpeed(double speed) {
 		this.speed = speed;
+	}
+
+	public void setAngleSpeed(double angleSpeed) {
+		this.angleSpeed = angleSpeed;
 	}
 
 	/**

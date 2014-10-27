@@ -4,65 +4,58 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import pt.ipb.game.engine.Command;
 import pt.ipb.game.engine.InputHandler;
+import pt.ipb.tankshooter.net.NCPlayerUpdated;
+import pt.ipb.tankshooter.net.NetworkPlayers;
 
 public class KeyInputHandler extends KeyAdapter implements InputHandler {
 
-	private static final long PERIOD = 100;
 	List<Command> commandList;
 	TankEntity tank;
 	TankShooterGame game;
-	
-	Timer fwTimer = null;
-	Timer rightTimer = null;
-	Timer leftTimer = null;
+	private NetworkPlayers networkPlayers;
 
-	public KeyInputHandler(TankShooterGame game, TankEntity tank) {
+	public KeyInputHandler(TankShooterGame game, TankEntity tank, NetworkPlayers networkPlayers) {
 		this.tank = tank;
 		this.game = game;
+		this.networkPlayers = networkPlayers;
 		commandList = new ArrayList<>();
 	}
 
 	public void keyPressed(KeyEvent e) {
 		if (e.getKeyCode() == KeyEvent.VK_LEFT) {
-			if (leftTimer==null) {
-				leftTimer = new Timer();
-				leftTimer.scheduleAtFixedRate(new TimerTask() {
-					@Override
-					public void run() {
-						commandList.add(new TurnLeftCommand(tank, -TankShooterGame.ANGLE_SPEED));
-					}
-				}, 0, PERIOD);
+			commandList.add(new TurnLeftCommand(tank, -TankShooterGame.ANGLE_SPEED));
+			try {
+				networkPlayers.updatePlayer(tank.getPlayer(), NCPlayerUpdated.COMMAND.TURN_LEFT);
+			} catch (Exception e1) {
+				e1.printStackTrace();
 			}
 		}
 		if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
-			if (rightTimer==null) {
-				rightTimer = new Timer();
-				rightTimer.scheduleAtFixedRate(new TimerTask() {
-					@Override
-					public void run() {
-						commandList.add(new TurnRightCommand(tank, TankShooterGame.ANGLE_SPEED));
-					}
-				}, 0, PERIOD);
+			commandList.add(new TurnRightCommand(tank, TankShooterGame.ANGLE_SPEED));
+			try {
+				networkPlayers.updatePlayer(tank.getPlayer(), NCPlayerUpdated.COMMAND.TURN_RIGHT);
+			} catch (Exception e1) {
+				e1.printStackTrace();
 			}
 		}
 		if (e.getKeyCode() == KeyEvent.VK_UP) {
-			if (fwTimer==null) {
-				fwTimer = new Timer();
-				fwTimer.scheduleAtFixedRate(new TimerTask() {
-					@Override
-					public void run() {
-						commandList.add(new ForwardCommand(tank, TankShooterGame.MOVE_SPEED));
-					}
-				}, 0, PERIOD);
+			commandList.add(new ForwardCommand(tank, TankShooterGame.MOVE_SPEED));
+			try {
+				networkPlayers.updatePlayer(tank.getPlayer(), NCPlayerUpdated.COMMAND.FW);
+			} catch (Exception e1) {
+				e1.printStackTrace();
 			}
 		}
 		if (e.getKeyCode() == KeyEvent.VK_SPACE) {
 			commandList.add(new FireCommand(game, tank));
+			try {
+				networkPlayers.updatePlayer(tank.getPlayer(), NCPlayerUpdated.COMMAND.FIRE);
+			} catch (Exception e1) {
+				e1.printStackTrace();
+			}
 		}
 	}
 
@@ -74,19 +67,28 @@ public class KeyInputHandler extends KeyAdapter implements InputHandler {
 	 */
 	public void keyReleased(KeyEvent e) {
 		if (e.getKeyCode() == KeyEvent.VK_LEFT) {
-			leftTimer.cancel();
-			leftTimer = null;
 			commandList.add(new TurnLeftCommand(tank, 0));
+			try {
+				networkPlayers.updatePlayer(tank.getPlayer(), NCPlayerUpdated.COMMAND.STOP_TURN_LEFT);
+			} catch (Exception e1) {
+				e1.printStackTrace();
+			}
 		}
 		if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
-			rightTimer.cancel();
-			rightTimer = null;
 			commandList.add(new TurnRightCommand(tank, 0));
+			try {
+				networkPlayers.updatePlayer(tank.getPlayer(), NCPlayerUpdated.COMMAND.STOP_TURN_RIGHT);
+			} catch (Exception e1) {
+				e1.printStackTrace();
+			}
 		}
 		if (e.getKeyCode() == KeyEvent.VK_UP) {
-			fwTimer.cancel();
-			fwTimer = null;
 			commandList.add(new ForwardCommand(tank, 0));
+			try {
+				networkPlayers.updatePlayer(tank.getPlayer(), NCPlayerUpdated.COMMAND.STOP);
+			} catch (Exception e1) {
+				e1.printStackTrace();
+			}
 		}
 	}
 

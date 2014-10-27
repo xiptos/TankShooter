@@ -20,7 +20,7 @@ public class TankShooterGame implements Game {
 	/** The speed at which the player's ship should move (pixels/sec) */
 	public static final double MOVE_SPEED = 100;
 	/** The speed at which the player's ship should move (pixels/sec) */
-	public static final double ANGLE_SPEED = 0.1;
+	public static final double ANGLE_SPEED = 0.05;
 
 	List<Entity> entities;
 	TankEntity tank;
@@ -132,7 +132,7 @@ public class TankShooterGame implements Game {
 			tankSprites[i] = spriteSheet.getSprite(i, entities.size());
 		}
 
-		TankEntity tank = new TankEntity(player.getId(), entities.size(), this, tankSprites, 10,
+		TankEntity tank = new TankEntity(player, this, tankSprites, 10,
 				50 + 50 * entities.size());
 		if (!entities.contains(tank))
 			entities.add(tank);
