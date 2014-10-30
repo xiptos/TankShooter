@@ -20,6 +20,7 @@ public class TankEntity extends Entity {
 	public TankEntity(Player player, TankShooterGame game,Sprite[] tankSprites,int x,int y) {
 		super(player.getId(), tankSprites,x,y);
 		this.player = player;
+		this.game = game;
 	}
 	
 	
@@ -32,20 +33,24 @@ public class TankEntity extends Entity {
 	public void move(double moveSpeed) {
 		// if we're moving left and have reached the left hand side
 		// of the screen, don't move
-		if (Math.abs(getAngle())>Math.PI/2 && (x < 10)) {
+		if (x < 10) {
+			x=10;
 			return;
 		}
 		// if we're moving right and have reached the right hand side
 		// of the screen, don't move
-		if (Math.abs(getAngle())<Math.PI/2 && (x > 750)) {
+		if (x > game.getWidth()-50) {
+			x = game.getWidth() -50;
 			return;
 		}
 
-		if (Math.abs(getAngle())>Math.PI && (y > 550)) {
+		if (y > game.getHeight()-50) {
+			y = game.getHeight() - 50;
 			return;
 		}
 
-		if (Math.abs(getAngle())<Math.PI && (y < 10)) {
+		if (y < 10) {
+			y = 10;
 			return;
 		}
 
@@ -65,6 +70,8 @@ public class TankEntity extends Entity {
 		// is dead
 		if (other instanceof ShotEntity) {
 			game.notifyDeath();
+		} else if(other instanceof TankEntity) {
+			setSpeed(-getSpeed());
 		}
 	}
 

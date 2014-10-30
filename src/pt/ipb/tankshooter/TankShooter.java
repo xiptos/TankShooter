@@ -77,7 +77,7 @@ public class TankShooter implements NetworkListener {
 
 		int backPattern = new Random().nextInt(2);
 		Image background = ImageIO.read(ClassLoader.getSystemResource(BACKGROUND + backPattern + ".png"));
-		game = new TankShooterGame(background);
+		game = new TankShooterGame(WIDTH, HEIGHT, background);
 		gameContainer = new PaneledGameContainer(WIDTH, HEIGHT);
 		gameContainer.init(new GameLoop(), game);
 

@@ -39,7 +39,7 @@ public class ShotEntity extends Entity {
 		super.move(delta);
 		
 		// if we shot off the screen, remove ourselfs
-		if (y < -100) {
+		if (y < 0 || y>game.getHeight() || x<0 || x>game.getWidth()) {
 			game.removeEntity(this);
 		}
 	}

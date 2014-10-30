@@ -32,10 +32,22 @@ public class TankShooterGame implements Game {
 	private long firingInterval = 500;
 
 	private List<Entity> removeList = new ArrayList<>();
+	private int width;
+	private int height;
 
-	public TankShooterGame(Image background) {
+	public TankShooterGame(int width, int height, Image background) {
 		this.background = background;
+		this.width = width;
+		this.height = height;
 		entities = new ArrayList<>();
+	}
+	
+	public int getWidth() {
+		return width;
+	}
+	
+	public int getHeight() {
+		return height;
 	}
 
 	@Override

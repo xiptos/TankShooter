@@ -45,7 +45,7 @@ public abstract class Entity {
 	public Entity(Sprite[] sprites, int x, int y) {
 		this(null, sprites, x, y);
 	}
-	
+
 	/**
 	 * Construct a entity based on a sprite image and a location.
 	 * 
@@ -105,7 +105,8 @@ public abstract class Entity {
 		x += (moveSpeed * dx);
 		y += (moveSpeed * dy);
 
-		timeToUpdate -= moveSpeed * speed;
+		animation.setAnimationDirection(speed < 0 ? -1 : 1);
+		timeToUpdate -= moveSpeed * Math.abs(speed);
 
 		if (timeToUpdate < 0) {
 			animation.update();

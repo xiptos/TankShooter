@@ -30,6 +30,10 @@ public class Animation {
 
 	}
 
+	public void setAnimationDirection(int animationDirection) {
+		this.animationDirection = animationDirection;
+	}
+	
 	public void start() {
 		if (!stopped) {
 			return;
