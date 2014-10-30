@@ -22,6 +22,8 @@ public class TankShooterGame implements Game {
 	/** The speed at which the player's ship should move (pixels/sec) */
 	public static final double ANGLE_SPEED = 0.05;
 
+	SpriteSheet shotSheet;
+
 	List<Entity> entities;
 	TankEntity tank;
 	Image background;
@@ -40,6 +42,7 @@ public class TankShooterGame implements Game {
 		this.width = width;
 		this.height = height;
 		entities = new ArrayList<>();
+		shotSheet = new SpriteSheet("pt/ipb/tankshooter/resources/shot.gif", 22, 12, 2);
 	}
 	
 	public int getWidth() {
@@ -109,8 +112,9 @@ public class TankShooterGame implements Game {
 		removeList.add(entity);
 	}
 
-	public void notifyTankKilled() {
-		System.out.println("Tank killed");
+	public void notifyTankKilled(Player shooter) {
+		System.out.println("Tank killed by " + shooter.getId());
+		shooter.incPoints();
 	}
 
 	public void tryToFire(TankEntity tank) {
@@ -122,7 +126,7 @@ public class TankShooterGame implements Game {
 		// if we waited long enough, create the shot entity, and record the
 		// time.
 		lastFire = System.currentTimeMillis();
-		SpriteSheet shotSheet = new SpriteSheet("pt/ipb/tankshooter/resources/shot.gif", 23, 12, 2);
+
 		Sprite[] shotSprites = new Sprite[] { shotSheet.getSprite(0, 0) };
 		double h = Math.sqrt((tank.getWidth() / 2) * (tank.getWidth() / 2) + (tank.getHeight() / 2)
 				* (tank.getHeight() / 2));
@@ -131,7 +135,7 @@ public class TankShooterGame implements Game {
 		int x = (int) (tank.getX() + tank.getWidth() / 2 + 2 * dx - 12);
 		int y = (int) (tank.getY() + tank.getHeight() / 2 + 2 * dy - 6);
 
-		ShotEntity shot = new ShotEntity(this, shotSprites, x, y);
+		ShotEntity shot = new ShotEntity(tank.getPlayer(), this, shotSprites, x, y);
 		shot.setAngle(tank.getAngle());
 		shot.setSpeed(SHOT_SPEED);
 		entities.add(shot);

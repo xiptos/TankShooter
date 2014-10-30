@@ -1,30 +1,35 @@
 package pt.ipb.tankshooter.net;
 
 import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.Image;
 
-import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.ListModel;
-
-import pt.ipb.tankshooter.PlayersListRenderer;
+import javax.swing.JTable;
+import javax.swing.table.TableModel;
 
 @SuppressWarnings("serial")
 public class PlayersPanel extends JPanel {
-	ListModel<Player> playerListModel;
+	TableModel playerTableModel;
 
-	public PlayersPanel(ListModel<Player> playerListModel) {
+	public PlayersPanel(TableModel playerTableModel) {
 		super(new BorderLayout());
-		this.playerListModel = playerListModel;
+		this.playerTableModel = playerTableModel;
 
 		initComponents();
 	}
 
 	private void initComponents() {
-		JList<Player> playerList = new JList<>(playerListModel);
-		playerList.setCellRenderer(new PlayersListRenderer());
-		
-		add(new JScrollPane(playerList), BorderLayout.CENTER);
+		JTable playerTable = new JTable(playerTableModel);
+		playerTable.setDefaultRenderer(Image.class, new PlayersIconCellRenderer());
+		playerTable.getColumn("").setMaxWidth(40);
+		playerTable.getColumn("Pontos").setMaxWidth(50);
+		add(new JScrollPane(playerTable), BorderLayout.CENTER);
 	}
 
+	@Override
+	public Dimension getPreferredSize() {
+		return new Dimension(200, super.getPreferredSize().width);
+	}
 }

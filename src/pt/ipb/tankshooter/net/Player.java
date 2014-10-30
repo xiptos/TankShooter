@@ -54,4 +54,8 @@ public class Player implements Serializable {
 	public String toString() {
 		return getId();
 	}
+
+	public void incPoints() {
+		this.points++;
+	}
 }

@@ -41,7 +41,7 @@ public class SpriteSheet {
         return sprite;
     }
 
-    public Sprite getSprite(int xGrid, int yGrid) {
+    public synchronized Sprite getSprite(int xGrid, int yGrid) {
         if (spriteSheet != null) {
         	BufferedImage image = spriteSheet.getSubimage(xGrid * tileWidth, yGrid * tileHeight, tileWidth, tileHeight); 
         	Sprite sprite = new Sprite(image, frameDelay);

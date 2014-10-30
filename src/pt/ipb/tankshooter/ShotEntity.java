@@ -2,6 +2,7 @@ package pt.ipb.tankshooter;
 
 import pt.ipb.game.engine.Entity;
 import pt.ipb.game.engine.Sprite;
+import pt.ipb.tankshooter.net.Player;
 
 /**
  * An entity representing a shot fired by the player's ship
@@ -13,6 +14,7 @@ public class ShotEntity extends Entity {
 	private TankShooterGame game;
 	/** True if this shot has been "used", i.e. its hit something */
 	private boolean used = false;
+	private Player shooter;
 	
 	/**
 	 * Create a new shot from the player
@@ -22,13 +24,16 @@ public class ShotEntity extends Entity {
 	 * @param x The initial x location of the shot
 	 * @param y The initial y location of the shot
 	 */
-	public ShotEntity(TankShooterGame game,Sprite[] buletSprites,int x,int y) {
+	public ShotEntity(Player shooter, TankShooterGame game,Sprite[] buletSprites,int x,int y) {
 		super(buletSprites,x,y);
-		
+		this.shooter = shooter;
 		this.game = game;
-		
 	}
 
+	public Player getShooter() {
+		return shooter;
+	}
+	
 	/**
 	 * Request that this shot moved based on time elapsed
 	 * 
@@ -64,7 +69,7 @@ public class ShotEntity extends Entity {
 			game.removeEntity(other);
 			
 			// notify the game that the alien has been killed
-			game.notifyTankKilled();
+			game.notifyTankKilled(shooter);
 			used = true;
 		}
 	}
