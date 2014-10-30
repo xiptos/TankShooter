@@ -56,9 +56,10 @@ public class TankShooter implements NetworkListener {
 		networkPlayers.enterGame(player);
 		game.addTank(player);
 		game.setTank(game.getTank(player));
-		keyInputHandler = new KeyInputHandler(game, game.getTank(player), networkPlayers);
+		keyInputHandler = new KeyInputHandler(game, game.getTank(player));
 
 		gameContainer.addKeyListener(keyInputHandler);
+		gameContainer.addKeyListener(new KeyBasedNetCommandGenerator(game, game.getTank(player), networkPlayers));
 		gameContainer.addInputHandler(keyInputHandler);
 
 	}
@@ -122,6 +123,11 @@ public class TankShooter implements NetworkListener {
 	}
 
 	public void start() {
+		try {
+			networkPlayers.updateState();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		gameContainer.start();
 	}
 

@@ -171,7 +171,7 @@ public class GameLoop {
 				if (currTime < nextTime) {
 					// sleep thread
 					try {
-						Thread.sleep(0);
+						Thread.sleep((int)meter.getSleepTime());
 					} catch (InterruptedException e) {
 						// do nothing
 					}

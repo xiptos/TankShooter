@@ -41,15 +41,18 @@ public class NetworkPlayers extends ReceiverAdapter {
 			channel.disconnect();
 		}
 		channel.setReceiver(this);
-		channel.getState(null, 10000);
 	}
 
+	public void updateState() throws Exception {
+		channel.getState(null, 10000);
+	}
+	
 	public void enterGame(Player player) throws Exception {
 		channel.send(null, new NCPlayerEnteringGame(player));
 	}
 
-	public void updatePlayer(Player player, NCPlayerUpdated.COMMAND command) throws Exception {
-		channel.send(null, new NCPlayerUpdated(player, command));
+	public void updatePlayer(Player player, List<NCPlayerUpdated.COMMAND> commands) throws Exception {
+		channel.send(null, new NCPlayerUpdated(player, commands));
 	}
 
 	public void stop() {
@@ -97,7 +100,7 @@ public class NetworkPlayers extends ReceiverAdapter {
 			NCPlayerUpdated nc = (NCPlayerUpdated)message;
 			Player player = nc.getPlayer();
 			playerManager.updatePlayer(player);
-			firePlayerUpdated(new NetworkEvent(this, player, nc.getCommand()));
+			firePlayerUpdated(new NetworkEvent(this, player, nc.getCommands()));
 		}
 	}
 

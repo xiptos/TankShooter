@@ -5,6 +5,7 @@ import java.util.List;
 
 import pt.ipb.game.engine.Command;
 import pt.ipb.game.engine.InputHandler;
+import pt.ipb.tankshooter.net.NCPlayerUpdated.COMMAND;
 import pt.ipb.tankshooter.net.NetworkEvent;
 import pt.ipb.tankshooter.net.NetworkListener;
 import pt.ipb.tankshooter.net.Player;
@@ -41,36 +42,42 @@ public class NetInputHandler implements NetworkListener, InputHandler {
 		TankEntity tank = game.getTank(player.getId());
 		synchronized (commandList) {
 			commandList.add(new UpdateTankCommand(tank, player));
-			switch (e.getCommand()) {
-			case TURN_LEFT:
-				commandList.add(new TurnLeftCommand(tank, -TankShooterGame.ANGLE_SPEED));
-				;
-				break;
-			case TURN_RIGHT:
-				commandList.add(new TurnRightCommand(tank, TankShooterGame.ANGLE_SPEED));
-				;
-				break;
-			case FW:
-				commandList.add(new ForwardCommand(tank, TankShooterGame.MOVE_SPEED));
-				;
-				break;
-			case STOP_TURN_LEFT:
-				commandList.add(new TurnLeftCommand(tank, 0));
-				;
-				break;
-			case STOP_TURN_RIGHT:
-				commandList.add(new TurnRightCommand(tank, 0));
-				;
-				break;
-			case STOP:
-				commandList.add(new ForwardCommand(tank, 0));
-				;
-				break;
-			case FIRE:
-				commandList.add(new FireCommand(game, tank));
-				;
-				break;
+			for (COMMAND command : e.getCommands()) {
+				switch (command) {
+				case TURN_LEFT:
+					commandList.add(new TurnCommand(tank, -TankShooterGame.ANGLE_SPEED));
+					;
+					break;
+				case TURN_RIGHT:
+					commandList.add(new TurnCommand(tank, TankShooterGame.ANGLE_SPEED));
+					;
+					break;
+				case FW:
+					commandList.add(new MoveCommand(tank, TankShooterGame.MOVE_SPEED));
+					;
+					break;
+				case BACK:
+					commandList.add(new MoveCommand(tank, -TankShooterGame.MOVE_SPEED));
+					;
+					break;
+				case STOP_TURN_LEFT:
+					commandList.add(new TurnCommand(tank, 0));
+					;
+					break;
+				case STOP_TURN_RIGHT:
+					commandList.add(new TurnCommand(tank, 0));
+					;
+					break;
+				case STOP:
+					commandList.add(new MoveCommand(tank, 0));
+					;
+					break;
+				case FIRE:
+					commandList.add(new FireCommand(game, tank));
+					;
+					break;
 
+				}
 			}
 		}
 	}

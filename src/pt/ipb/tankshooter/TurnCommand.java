@@ -2,18 +2,20 @@ package pt.ipb.tankshooter;
 
 import pt.ipb.game.engine.Command;
 
-public class TurnRightCommand implements Command {
+public class TurnCommand implements Command {
 	double angle;
 	TankEntity tank;
 
-	public TurnRightCommand(TankEntity tank, double angle) {
+	public TurnCommand(TankEntity tank, double angle) {
 		this.tank = tank;
 		this.angle = angle;
 	}
 
 	@Override
 	public void execute() {
-		tank.setAngleSpeed(angle);
+		if (tank != null) {
+			tank.setAngleSpeed(angle);
+		}
 	}
 
 }

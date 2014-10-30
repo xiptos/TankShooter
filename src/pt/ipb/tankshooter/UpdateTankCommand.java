@@ -18,9 +18,11 @@ public class UpdateTankCommand implements Command {
 
 	@Override
 	public void execute() {
-		tank.setAngle(angle);
-		tank.setX(x);
-		tank.setY(y);
+		if (tank != null) {
+			tank.setAngle(angle);
+			tank.setX(x);
+			tank.setY(y);
+		}
 	}
 
 }

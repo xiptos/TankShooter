@@ -1,12 +1,15 @@
 package pt.ipb.tankshooter.net;
 
 import java.util.EventObject;
+import java.util.List;
+
+import pt.ipb.tankshooter.net.NCPlayerUpdated.COMMAND;
 
 @SuppressWarnings("serial")
 public class NetworkEvent extends EventObject {
 
     private Player player;
-	private NCPlayerUpdated.COMMAND command;
+	private List<COMMAND> commands;
 
 	public NetworkEvent(Object source, Player player) {
 		this(source, player, null);
@@ -16,17 +19,17 @@ public class NetworkEvent extends EventObject {
 		this(source, null, null);
 	}
 
-	public NetworkEvent(Object source, Player player, NCPlayerUpdated.COMMAND command) {
+	public NetworkEvent(Object source, Player player, List<COMMAND> commands) {
 		super(source);
 		this.player = player;
-		this.command = command;
+		this.commands = commands;
 	}
 
 	public Player getPlayer() {
 		return player;
 	}
 	
-	public NCPlayerUpdated.COMMAND getCommand() {
-		return command;
+	public List<COMMAND> getCommands() {
+		return commands;
 	}
 }

@@ -13,7 +13,9 @@ public class FireCommand implements Command {
 
 	@Override
 	public void execute() {
-		game.tryToFire(tank);
+		if (tank != null) {
+			game.tryToFire(tank);
+		}
 	}
 
 }
