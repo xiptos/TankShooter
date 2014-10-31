@@ -6,6 +6,7 @@ import java.awt.Image;
 import java.awt.Rectangle;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
+import java.util.UUID;
 
 /**
  * An entity represents any element that appears in the game. The entity is
@@ -27,14 +28,11 @@ public abstract class Entity {
 	protected double y;
 	/** The sprite that represents this entity */
 	// Images for each animation
-	private Sprite[] sprites;
-	private Animation animation;
+	private BufferedImage image;
 	/** The current speed of this entity (pixels/sec) */
 	protected double speed;
 	/** The current angle of this entity (radians) */
 	protected double angle;
-	/** time to update animation */
-	protected double timeToUpdate = 0;
 
 	/** The rectangle used for this entity during collisions resolution */
 	private Rectangle me = new Rectangle();
@@ -42,8 +40,8 @@ public abstract class Entity {
 	private Rectangle him = new Rectangle();
 	private double angleSpeed;
 
-	public Entity(Sprite[] sprites, int x, int y) {
-		this(null, sprites, x, y);
+	public Entity(BufferedImage image, int x, int y) {
+		this(UUID.randomUUID().toString(), image, x, y);
 	}
 
 	/**
@@ -56,11 +54,9 @@ public abstract class Entity {
 	 * @param y
 	 *            The initial y location of this entity
 	 */
-	public Entity(String id, Sprite[] sprites, int x, int y) {
+	public Entity(String id, BufferedImage image, int x, int y) {
 		this.id = id;
-		this.sprites = sprites;
-		this.animation = new Animation(sprites);
-		this.animation.start();
+		this.image = image;
 		this.x = x;
 		this.y = y;
 	}
@@ -98,20 +94,12 @@ public abstract class Entity {
 	 */
 	public void move(double moveSpeed) {
 		this.angle = (this.angle + angleSpeed) % (2 * Math.PI);
-
 		// update the location of the entity based on move speeds
 		double dx = Math.cos(angle) * speed;
 		double dy = Math.sin(angle) * speed;
 		x += (moveSpeed * dx);
 		y += (moveSpeed * dy);
 
-		animation.setAnimationDirection(speed < 0 ? -1 : 1);
-		timeToUpdate -= moveSpeed * Math.abs(speed);
-
-		if (timeToUpdate < 0) {
-			animation.update();
-			timeToUpdate = animation.getSprite().getFrameDelay();
-		}
 	}
 
 	public void rotate(double angle) {
@@ -156,15 +144,13 @@ public abstract class Entity {
 	 *            The graphics context on which to draw
 	 */
 	public void draw(Graphics g) {
-
-		BufferedImage image = new BufferedImage(animation.getSprite().getWidth(), animation.getSprite().getHeight(),
-				BufferedImage.TYPE_4BYTE_ABGR);
+		BufferedImage image = new BufferedImage(getWidth(), getHeight(), BufferedImage.TYPE_4BYTE_ABGR);
 		Graphics2D b2g = image.createGraphics();
 		AffineTransform saveXform = b2g.getTransform();
 		AffineTransform at = new AffineTransform();
 		at.rotate(angle, image.getWidth() / 2, image.getHeight() / 2);
 		b2g.transform(at);
-		b2g.drawImage(animation.getSprite().getFrame(), 0, 0, null);
+		b2g.drawImage(getIcon(), 0, 0, null);
 		b2g.setTransform(saveXform);
 
 		g.drawImage(image, (int) x, (int) y, null);
@@ -196,15 +182,15 @@ public abstract class Entity {
 	}
 
 	public int getWidth() {
-		if (sprites.length != 0) {
-			return sprites[0].getWidth();
+		if (getIcon() != null) {
+			return getIcon().getWidth(null);
 		}
 		return 0;
 	}
 
 	public int getHeight() {
-		if (sprites.length != 0) {
-			return sprites[0].getHeight();
+		if (getIcon() != null) {
+			return getIcon().getHeight(null);
 		}
 		return 0;
 	}
@@ -232,10 +218,7 @@ public abstract class Entity {
 	public abstract void collidedWith(Entity other);
 
 	public Image getIcon() {
-		if (sprites.length > 0) {
-			return sprites[0].getFrame();
-		}
-		return null;
+		return image;
 	}
 
 	public void setX(double x) {

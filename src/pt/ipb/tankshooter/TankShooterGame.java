@@ -2,9 +2,12 @@ package pt.ipb.tankshooter;
 
 import java.awt.Graphics2D;
 import java.awt.Image;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.imageio.ImageIO;
 import javax.swing.JOptionPane;
 
 import pt.ipb.game.engine.Entity;
@@ -22,7 +25,9 @@ public class TankShooterGame implements Game {
 	/** The speed at which the player's ship should move (pixels/sec) */
 	public static final double ANGLE_SPEED = 0.05;
 
-	SpriteSheet shotSheet;
+	BufferedImage shotImage;
+	SpriteSheet spriteSheet;
+
 
 	List<Entity> entities;
 	TankEntity tank;
@@ -42,7 +47,12 @@ public class TankShooterGame implements Game {
 		this.width = width;
 		this.height = height;
 		entities = new ArrayList<>();
-		shotSheet = new SpriteSheet("pt/ipb/tankshooter/resources/shot.gif", 22, 12, 2);
+		spriteSheet = new SpriteSheet("pt/ipb/tankshooter/resources/MulticolorTanks.png", 32, 5);
+		try {
+			shotImage = ImageIO.read(this.getClass().getClassLoader().getResource("pt/ipb/tankshooter/resources/shot.gif"));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	public int getWidth() {
@@ -127,7 +137,6 @@ public class TankShooterGame implements Game {
 		// time.
 		lastFire = System.currentTimeMillis();
 
-		Sprite[] shotSprites = new Sprite[] { shotSheet.getSprite(0, 0) };
 		double h = Math.sqrt((tank.getWidth() / 2) * (tank.getWidth() / 2) + (tank.getHeight() / 2)
 				* (tank.getHeight() / 2));
 		double dx = Math.cos(tank.getAngle()) * h;
@@ -135,14 +144,13 @@ public class TankShooterGame implements Game {
 		int x = (int) (tank.getX() + tank.getWidth() / 2 + 2 * dx - 12);
 		int y = (int) (tank.getY() + tank.getHeight() / 2 + 2 * dy - 6);
 
-		ShotEntity shot = new ShotEntity(tank.getPlayer(), this, shotSprites, x, y);
+		ShotEntity shot = new ShotEntity(tank.getPlayer(), this, shotImage, x, y);
 		shot.setAngle(tank.getAngle());
 		shot.setSpeed(SHOT_SPEED);
 		entities.add(shot);
 	}
 
 	public void addTank(Player player) {
-		SpriteSheet spriteSheet = new SpriteSheet("pt/ipb/tankshooter/resources/MulticolorTanks.png", 32, 5);
 		Sprite[] tankSprites = new Sprite[8];
 		for (int i = 0; i < 8; i++) {
 			tankSprites[i] = spriteSheet.getSprite(i, entities.size());
