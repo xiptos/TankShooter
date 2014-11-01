@@ -27,7 +27,6 @@ public class NetworkPlayers extends ReceiverAdapter {
 	}
 
 	public void start() throws Exception {
-		// TODO: check the jgroups Draw demo 
 		channel = new JChannel("etc/protocol.xml");
 
 		while (true) {
@@ -41,12 +40,9 @@ public class NetworkPlayers extends ReceiverAdapter {
 			channel.disconnect();
 		}
 		channel.setReceiver(this);
-	}
-
-	public void updateState() throws Exception {
 		channel.getState(null, 10000);
 	}
-	
+
 	public void enterGame(Player player) throws Exception {
 		channel.send(null, new NCPlayerEnteringGame(player));
 	}
@@ -73,7 +69,6 @@ public class NetworkPlayers extends ReceiverAdapter {
 		for(Player player : players) {
 			firePlayerEntered(new NetworkEvent(this, player));
 		}
-		
 	}
 
 	@Override

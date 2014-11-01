@@ -36,13 +36,13 @@ public abstract class SpriteEntity extends Entity {
 	 * 
 	 * @param ref
 	 *            The reference to the image to be displayed for this entity
-	 * @param x
+	 * @param d
 	 *            The initial x location of this entity
-	 * @param y
+	 * @param e
 	 *            The initial y location of this entity
 	 */
-	public SpriteEntity(String id, Sprite[] sprites, int x, int y) {
-		super(id, null, x, y);
+	public SpriteEntity(String id, Sprite[] sprites, double d, double e) {
+		super(id, null, d, e);
 		this.sprites = sprites;
 		this.animation = new Animation(sprites);
 		this.animation.start();
@@ -91,30 +91,12 @@ public abstract class SpriteEntity extends Entity {
 		Graphics2D b2g = image.createGraphics();
 		AffineTransform saveXform = b2g.getTransform();
 		AffineTransform at = new AffineTransform();
-		at.rotate(angle, image.getWidth() / 2, image.getHeight() / 2);
+		at.rotate(getAngle(), image.getWidth() / 2, image.getHeight() / 2);
 		b2g.transform(at);
 		b2g.drawImage(animation.getSprite().getFrame(), 0, 0, null);
 		b2g.setTransform(saveXform);
 
-		g.drawImage(image, (int) x, (int) y, null);
-	}
-
-	/**
-	 * Get the x location of this entity
-	 * 
-	 * @return The x location of this entity
-	 */
-	public int getX() {
-		return (int) x;
-	}
-
-	/**
-	 * Get the y location of this entity
-	 * 
-	 * @return The y location of this entity
-	 */
-	public int getY() {
-		return (int) y;
+		g.drawImage(image, (int) getX(), (int) getY(), null);
 	}
 
 	public int getWidth() {

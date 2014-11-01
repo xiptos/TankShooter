@@ -15,10 +15,10 @@ public class TankEntity extends SpriteEntity {
 	 *  
 	 * @param game The game in which the ship is being created
 	 * @param ref The reference to the sprite to show for the ship
-	 * @param x The initial x location of the player's ship
-	 * @param y The initial y location of the player's ship
+	 * @param d The initial x location of the player's ship
+	 * @param e The initial y location of the player's ship
 	 */
-	public TankEntity(Player player, TankShooterGame game,Sprite[] tankSprites,int x,int y) {
+	public TankEntity(Player player, TankShooterGame game,Sprite[] tankSprites,double x,double y) {
 		super(player.getId(), tankSprites,x,y);
 		this.player = player;
 		this.game = game;
@@ -34,31 +34,58 @@ public class TankEntity extends SpriteEntity {
 	public void move(double moveSpeed) {
 		// if we're moving left and have reached the left hand side
 		// of the screen, don't move
-		if (x < 10) {
-			x=10;
+		if (getX() < 10) {
+			setX(10);
 			return;
 		}
 		// if we're moving right and have reached the right hand side
 		// of the screen, don't move
-		if (x > game.getWidth()-50) {
-			x = game.getWidth() -50;
+		if (getX() > game.getWidth()-50) {
+			setX(game.getWidth() -50);
 			return;
 		}
 
-		if (y > game.getHeight()-50) {
-			y = game.getHeight() - 50;
+		if (getY() > game.getHeight()-50) {
+			setY(game.getHeight() - 50);
 			return;
 		}
 
-		if (y < 10) {
-			y = 10;
+		if (getY() < 10) {
+			setY(10);
 			return;
 		}
 
 		super.move(moveSpeed);
-		player.setAngle(getAngle());
-		player.setX(getX());
-		player.setY(getY());
+	}
+
+	@Override
+	public void setX(double x) {
+		player.setX(x);
+	}
+	
+	@Override
+	public double getX() {
+		return player.getX();
+	}
+	
+	@Override
+	public void setY(double y) {
+		player.setY(y);
+	}
+	
+	@Override
+	public double getY() {
+		return player.getY();
+	}
+	
+	@Override
+	public void setAngle(double angle) {
+		player.setAngle(angle);
+	}
+	
+	@Override
+	public double getAngle() {
+		return player.getAngle();
 	}
 	
 	/**

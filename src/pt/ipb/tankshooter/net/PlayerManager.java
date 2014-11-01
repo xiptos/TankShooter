@@ -21,7 +21,12 @@ public class PlayerManager extends AbstractTableModel {
 	}
 
 	public synchronized void addPlayer(Player player) {
-		players.add(player);
+		if (players.contains(player)) {
+			players.set(players.indexOf(player), player);
+		} else {
+			players.add(player);
+		}
+		System.out.println("PlayerManager.player added");
 		fireTableRowsInserted(players.size() - 1, players.size() - 1);
 	}
 
@@ -76,14 +81,17 @@ public class PlayerManager extends AbstractTableModel {
 
 	@Override
 	public String getColumnName(int column) {
-		switch(column) {
-		case 0 : return "";
-		case 1 : return "Nome";
-		case 2 : return "Pontos";
+		switch (column) {
+		case 0:
+			return "";
+		case 1:
+			return "Nome";
+		case 2:
+			return "Pontos";
 		}
 		return null;
 	}
-	
+
 	@Override
 	public Class<?> getColumnClass(int columnIndex) {
 		switch (columnIndex) {

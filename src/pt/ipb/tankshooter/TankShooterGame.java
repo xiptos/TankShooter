@@ -15,9 +15,11 @@ import pt.ipb.game.engine.Game;
 import pt.ipb.game.engine.GameContainer;
 import pt.ipb.game.engine.Sprite;
 import pt.ipb.game.engine.SpriteSheet;
+import pt.ipb.tankshooter.net.NetworkEvent;
+import pt.ipb.tankshooter.net.NetworkListener;
 import pt.ipb.tankshooter.net.Player;
 
-public class TankShooterGame implements Game {
+public class TankShooterGame implements Game, NetworkListener {
 	/** The speed at which the player's ship should move (pixels/sec) */
 	public static final double SHOT_SPEED = 300;
 	/** The speed at which the player's ship should move (pixels/sec) */
@@ -32,6 +34,8 @@ public class TankShooterGame implements Game {
 	List<Entity> entities;
 	TankEntity tank;
 	Image background;
+	
+	boolean playing = false;
 
 	/** The time at which last fired a shot */
 	private long lastFire = 0;
@@ -115,6 +119,7 @@ public class TankShooterGame implements Game {
 	}
 
 	public void notifyDeath() {
+		playing = false;
 		JOptionPane.showMessageDialog(null, "Oh não... fui atingido!");
 	}
 
@@ -156,13 +161,13 @@ public class TankShooterGame implements Game {
 			tankSprites[i] = spriteSheet.getSprite(i, entities.size());
 		}
 
-		TankEntity tank = new TankEntity(player, this, tankSprites, 10,
-				50 + 50 * entities.size());
+		TankEntity tank = new TankEntity(player, this, tankSprites, player.getX(), player.getY());
 		if (!entities.contains(tank))
 			entities.add(tank);
 	}
 
 	public void setTank(TankEntity tank) {
+		playing = true;
 		this.tank = tank;
 	}
 
@@ -190,6 +195,24 @@ public class TankShooterGame implements Game {
 	public void removeTank(Player player) {
 		TankEntity tank = getTank(player);
 		removeEntity(tank);
+	}
+
+	@Override
+	public void playerEntered(NetworkEvent e) {
+		addTank(e.getPlayer());
+	}
+
+	@Override
+	public void playerExited(NetworkEvent e) {
+		removeTank(e.getPlayer());
+	}
+
+	@Override
+	public void playerUpdated(NetworkEvent e) {
+	}
+
+	public boolean isPlaying() {
+		return playing;
 	}
 
 }

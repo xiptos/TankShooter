@@ -23,16 +23,16 @@ import java.util.UUID;
 public abstract class Entity {
 	String id;
 	/** The current x location of this entity */
-	protected double x;
+	private double x;
 	/** The current y location of this entity */
-	protected double y;
+	private double y;
 	/** The sprite that represents this entity */
 	// Images for each animation
 	private BufferedImage image;
 	/** The current speed of this entity (pixels/sec) */
 	protected double speed;
 	/** The current angle of this entity (radians) */
-	protected double angle;
+	private double angle;
 
 	/** The rectangle used for this entity during collisions resolution */
 	private Rectangle me = new Rectangle();
@@ -49,16 +49,16 @@ public abstract class Entity {
 	 * 
 	 * @param ref
 	 *            The reference to the image to be displayed for this entity
-	 * @param x
+	 * @param d
 	 *            The initial x location of this entity
-	 * @param y
+	 * @param e
 	 *            The initial y location of this entity
 	 */
-	public Entity(String id, BufferedImage image, int x, int y) {
+	public Entity(String id, BufferedImage image, double d, double e) {
 		this.id = id;
 		this.image = image;
-		this.x = x;
-		this.y = y;
+		this.x = d;
+		this.y = e;
 	}
 
 	@Override
@@ -93,17 +93,17 @@ public abstract class Entity {
 	 *            The ammount of time that has passed in milliseconds
 	 */
 	public void move(double moveSpeed) {
-		this.angle = (this.angle + angleSpeed) % (2 * Math.PI);
+		setAngle((getAngle() + angleSpeed) % (2 * Math.PI));
 		// update the location of the entity based on move speeds
-		double dx = Math.cos(angle) * speed;
-		double dy = Math.sin(angle) * speed;
-		x += (moveSpeed * dx);
-		y += (moveSpeed * dy);
+		double dx = Math.cos(getAngle()) * speed;
+		double dy = Math.sin(getAngle()) * speed;
+		setX(getX()+ (moveSpeed * dx));
+		setY(getY() + (moveSpeed * dy));
 
 	}
 
 	public void rotate(double angle) {
-		this.angle = (this.angle + angle) % (2 * Math.PI);
+		setAngle((getAngle() + angle) % (2 * Math.PI));
 	}
 
 	public double getAngle() {
@@ -148,12 +148,12 @@ public abstract class Entity {
 		Graphics2D b2g = image.createGraphics();
 		AffineTransform saveXform = b2g.getTransform();
 		AffineTransform at = new AffineTransform();
-		at.rotate(angle, image.getWidth() / 2, image.getHeight() / 2);
+		at.rotate(getAngle(), image.getWidth() / 2, image.getHeight() / 2);
 		b2g.transform(at);
 		b2g.drawImage(getIcon(), 0, 0, null);
 		b2g.setTransform(saveXform);
 
-		g.drawImage(image, (int) x, (int) y, null);
+		g.drawImage(image, (int) getX(), (int) getY(), null);
 	}
 
 	/**
@@ -168,8 +168,8 @@ public abstract class Entity {
 	 * 
 	 * @return The x location of this entity
 	 */
-	public int getX() {
-		return (int) x;
+	public double getX() {
+		return x;
 	}
 
 	/**
@@ -177,8 +177,8 @@ public abstract class Entity {
 	 * 
 	 * @return The y location of this entity
 	 */
-	public int getY() {
-		return (int) y;
+	public double getY() {
+		return y;
 	}
 
 	public int getWidth() {
@@ -203,8 +203,8 @@ public abstract class Entity {
 	 * @return True if the entities collide with each other
 	 */
 	public boolean collidesWith(Entity other) {
-		me.setBounds((int) x, (int) y, getWidth(), getHeight());
-		him.setBounds((int) other.x, (int) other.y, other.getWidth(), other.getHeight());
+		me.setBounds((int) getX(), (int) getY(), getWidth(), getHeight());
+		him.setBounds((int) other.getX(), (int) other.getY(), other.getWidth(), other.getHeight());
 
 		return me.intersects(him);
 	}
