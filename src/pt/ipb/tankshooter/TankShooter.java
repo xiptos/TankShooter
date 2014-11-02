@@ -35,7 +35,8 @@ public class TankShooter implements KeyListener {
 	DefaultPlayerModel playerModel;
 	private NetInputHandler netInputHandler;
 	protected KeyInputHandler keyInputHandler;
-	
+	protected Player player;
+
 	public TankShooter() {
 		try {
 			initGame();
@@ -46,10 +47,10 @@ public class TankShooter implements KeyListener {
 		}
 
 	}
-	
+
 	private void initGame() throws IOException {
 		playerModel = new DefaultPlayerModel();
-		
+
 		int backPattern = new Random().nextInt(3);
 		Image background = ImageIO.read(ClassLoader.getSystemResource(BACKGROUND + backPattern + ".png"));
 		game = new TankShooterGame(WIDTH, HEIGHT, background);
@@ -57,80 +58,81 @@ public class TankShooter implements KeyListener {
 
 		gameContainer = new PaneledGameContainer(WIDTH, HEIGHT);
 		gameContainer.addKeyListener(this);
-		
+
 		gameContainer.init(new GameLoop(), game);
 	}
 
 	private void initNetwork() throws Exception {
 		networkPlayers = new NetworkPlayers(playerModel);
-		
+
 		networkPlayers.addNetworkListener(new NetworkListener() {
-			
+
 			@Override
 			public void playerUpdated(NetworkEvent e) {
 			}
-			
+
 			@Override
 			public void playerExited(NetworkEvent e) {
 				playerModel.removePlayer(e.getPlayer());
 			}
-			
+
 			@Override
 			public void playerEntered(NetworkEvent e) {
 				playerModel.addPlayer(e.getPlayer());
 			}
 		});
-		
+
 		netInputHandler = new NetInputHandler(game);
 		gameContainer.addInputHandler(netInputHandler);
 
 		networkPlayers.addNetworkListener(netInputHandler);
-		
+
 		networkPlayers.start();
 	}
 
-
-
 	private void initPlayer() throws Exception {
 		SwingWorker<Player, Void> worker = new SwingWorker<Player, Void>() {
-		    @Override
-		    public Player doInBackground() {
-				String name = System.getProperty("user.name");
-				name = JOptionPane.showInputDialog("Nome do jogador:", name);
-				if (name == null) {
-					name = networkPlayers.getNetworkID();
+			@Override
+			public Player doInBackground() {
+				if (player == null) {
+					String name = System.getProperty("user.name");
+					name = JOptionPane.showInputDialog("Nome do jogador:", name);
+					if (name == null) {
+						name = networkPlayers.getNetworkID();
+					}
+					player = new Player(name);
+					player.setX(10);
+					player.setY(50 + 50 * playerModel.getPlayerCount());
 				}
-				Player player = new Player(name);
-				player.setX(10);
-				player.setY(50 + 50 * playerModel.getPlayerCount());
 				return player;
-		    }
+			}
 
-		    @Override
-		    public void done() {
-		    	try {
+			@Override
+			public void done() {
+				try {
 					Player player = get();
 
 					playerModel.addPlayer(player);
 					playerModel.setSelectedPlayer(player);
 					networkPlayers.enterGame(player);
-					
+
 					keyInputHandler = new KeyInputHandler(game, game.getTank(player));
 					gameContainer.addInputHandler(keyInputHandler);
 
 					gameContainer.addKeyListener(keyInputHandler);
-					gameContainer.addKeyListener(new KeyBasedNetCommandGenerator(game, game.getTank(player), networkPlayers));
+					gameContainer.addKeyListener(new KeyBasedNetCommandGenerator(game, game.getTank(player),
+							networkPlayers));
 
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
-		    }
+			}
 		};
 		worker.execute();
 	}
 
 	private void initFrame(int width, int height) {
-		
+
 		// create a frame to contain our game
 		JFrame container = new JFrame("Tank Shooter");
 
@@ -184,7 +186,7 @@ public class TankShooter implements KeyListener {
 
 	@Override
 	public void keyReleased(KeyEvent e) {
-		if(game.isPlaying()) {
+		if (game.isPlaying()) {
 			return;
 		}
 		if (e.getKeyCode() == KeyEvent.VK_F5) {

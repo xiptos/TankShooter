@@ -23,7 +23,7 @@ public abstract class SpriteEntity extends Entity {
 	/** The sprite that represents this entity */
 	// Images for each animation
 	private Sprite[] sprites;
-	private Animation animation;
+	protected Animation animation;
 	/** time to update animation */
 	protected double timeToUpdate = 0;
 
@@ -86,6 +86,8 @@ public abstract class SpriteEntity extends Entity {
 	 */
 	@Override
 	public void draw(Graphics g) {
+		if (animation.getSprite() == null)
+			return;
 		BufferedImage image = new BufferedImage(animation.getSprite().getWidth(), animation.getSprite().getHeight(),
 				BufferedImage.TYPE_4BYTE_ABGR);
 		Graphics2D b2g = image.createGraphics();

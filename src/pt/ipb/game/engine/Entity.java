@@ -99,7 +99,6 @@ public abstract class Entity {
 		double dy = Math.sin(getAngle()) * speed;
 		setX(getX()+ (moveSpeed * dx));
 		setY(getY() + (moveSpeed * dy));
-
 	}
 
 	public void rotate(double angle) {

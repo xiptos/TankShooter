@@ -6,9 +6,9 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import javax.imageio.ImageIO;
-import javax.swing.JOptionPane;
 
 import pt.ipb.game.engine.Entity;
 import pt.ipb.game.engine.Game;
@@ -28,13 +28,12 @@ public class TankShooterGame implements Game, PlayerListener {
 	public static final double ANGLE_SPEED = 0.05;
 
 	BufferedImage shotImage;
-	SpriteSheet spriteSheet;
-
+	SpriteSheet tankSheet;
 
 	List<Entity> entities;
 	TankEntity tank;
 	Image background;
-	
+
 	boolean playing = false;
 
 	/** The time at which last fired a shot */
@@ -45,24 +44,29 @@ public class TankShooterGame implements Game, PlayerListener {
 	private List<Entity> removeList = new ArrayList<>();
 	private int width;
 	private int height;
+	private SpriteSheet explosion1Sheet;
+	private SpriteSheet explosion2Sheet;
 
 	public TankShooterGame(int width, int height, Image background) {
 		this.background = background;
 		this.width = width;
 		this.height = height;
 		entities = new ArrayList<>();
-		spriteSheet = new SpriteSheet("pt/ipb/tankshooter/resources/MulticolorTanks.png", 32, 5);
+		tankSheet = new SpriteSheet("pt/ipb/tankshooter/resources/MulticolorTanks.png", 32, 5);
+		explosion1Sheet = new SpriteSheet("pt/ipb/tankshooter/resources/explosion2.png", 64, 8);
+		explosion2Sheet = new SpriteSheet("pt/ipb/tankshooter/resources/explosion17.png", 64, 8);
 		try {
-			shotImage = ImageIO.read(this.getClass().getClassLoader().getResource("pt/ipb/tankshooter/resources/shot.gif"));
+			shotImage = ImageIO.read(this.getClass().getClassLoader()
+					.getResource("pt/ipb/tankshooter/resources/shot.gif"));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public int getWidth() {
 		return width;
 	}
-	
+
 	public int getHeight() {
 		return height;
 	}
@@ -120,15 +124,16 @@ public class TankShooterGame implements Game, PlayerListener {
 
 	public void notifyDeath() {
 		playing = false;
-		JOptionPane.showMessageDialog(null, "Oh não... fui atingido!");
+		System.out.println("Oh não... fui atingido!");
 	}
 
 	public void removeEntity(Entity entity) {
 		removeList.add(entity);
 	}
 
-	public void notifyTankKilled(Player shooter) {
-		System.out.println("Tank killed by " + shooter.getId());
+	public void notifyTankKilled(Player tank, Player shooter) {
+		System.out.println("Tank killed...");
+		addExplosion(tank);
 		shooter.incPoints();
 	}
 
@@ -155,10 +160,37 @@ public class TankShooterGame implements Game, PlayerListener {
 		entities.add(shot);
 	}
 
+	public void addExplosion(Player player) {
+		int explosionNum = new Random().nextInt(2);
+		Sprite[] explosionSprites = null;
+		if (explosionNum > 1) {
+			explosionSprites = new Sprite[16];
+			for (int i = 0; i < 4; i++) {
+				for (int t = 0; t < 4; t++) {
+					explosionSprites[i] = explosion1Sheet.getSprite(t, i);
+				}
+			}
+		} else {
+			explosionSprites = new Sprite[20];
+			for (int i = 0; i < 5; i++) {
+				for (int t = 0; t < 4; t++) {
+					explosionSprites[i] = explosion2Sheet.getSprite(t, i);
+				}
+			}
+		}
+
+		int dx = getTank(player).getWidth() / 2 - explosionSprites[0].getWidth() / 2;
+		int dy = getTank(player).getHeight() / 2 - explosionSprites[0].getHeight() / 2;
+
+		ExplosionEntity explosion = new ExplosionEntity(explosionSprites, this, (int) player.getX() + dx,
+				(int) player.getY() + dy);
+		entities.add(explosion);
+	}
+
 	public void addTank(Player player) {
 		Sprite[] tankSprites = new Sprite[8];
 		for (int i = 0; i < 8; i++) {
-			tankSprites[i] = spriteSheet.getSprite(i, entities.size());
+			tankSprites[i] = tankSheet.getSprite(i, entities.size());
 		}
 
 		TankEntity tank = new TankEntity(player, this, tankSprites, player.getX(), player.getY());

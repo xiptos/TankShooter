@@ -11,7 +11,7 @@ import javax.imageio.ImageIO;
  *
  */
 public class SpriteSheet {
-	private static BufferedImage spriteSheet;
+	private BufferedImage spriteSheet;
 	
 	int tileWidth, tileHeight;
 
