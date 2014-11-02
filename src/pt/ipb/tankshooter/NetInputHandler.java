@@ -5,10 +5,10 @@ import java.util.List;
 
 import pt.ipb.game.engine.Command;
 import pt.ipb.game.engine.InputHandler;
+import pt.ipb.tankshooter.model.Player;
 import pt.ipb.tankshooter.net.NCPlayerUpdated.COMMAND;
 import pt.ipb.tankshooter.net.NetworkEvent;
 import pt.ipb.tankshooter.net.NetworkListener;
-import pt.ipb.tankshooter.net.Player;
 
 public class NetInputHandler implements NetworkListener, InputHandler {
 

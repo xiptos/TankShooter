@@ -1,4 +1,4 @@
-package pt.ipb.tankshooter.net;
+package pt.ipb.tankshooter.model;
 
 import java.io.Serializable;
 
@@ -14,6 +14,15 @@ public class Player implements Serializable {
 		this.id = id;
 	}
 
+	@Override
+	public boolean equals(Object obj) {
+		if(obj instanceof Player) {
+			Player other = (Player) obj;
+			return getId().equals(other.getId());
+		}
+		return false;
+	}
+	
 	public String getId() {
 		return id;
 	}

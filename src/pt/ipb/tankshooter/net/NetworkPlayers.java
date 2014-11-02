@@ -14,16 +14,19 @@ import org.jgroups.ReceiverAdapter;
 import org.jgroups.View;
 import org.jgroups.util.Util;
 
+import pt.ipb.tankshooter.model.DefaultPlayerModel;
+import pt.ipb.tankshooter.model.Player;
+
 public class NetworkPlayers extends ReceiverAdapter {
 	private static final String CLUSTER = "TankShooter";
 	int clusterNum = 0;
 	JChannel channel;
 
 	EventListenerList listenerList = new EventListenerList();
-	PlayerManager playerManager;
+	private DefaultPlayerModel playerModel;
 
-	public NetworkPlayers(PlayerManager playerManager) {
-		this.playerManager = playerManager;
+	public NetworkPlayers(DefaultPlayerModel playerModel) {
+		this.playerModel = playerModel;
 	}
 
 	public void start() throws Exception {
@@ -47,6 +50,10 @@ public class NetworkPlayers extends ReceiverAdapter {
 		channel.send(null, new NCPlayerEnteringGame(player));
 	}
 
+	public void exitGame(Player player) throws Exception {
+		channel.send(null, new NCPlayerExitingGame(player));
+	}
+
 	public void updatePlayer(Player player, List<NCPlayerUpdated.COMMAND> commands) throws Exception {
 		channel.send(null, new NCPlayerUpdated(player, commands));
 	}
@@ -57,7 +64,7 @@ public class NetworkPlayers extends ReceiverAdapter {
 
 	@Override
 	public void getState(OutputStream output) throws Exception {
-		Util.objectToStream(playerManager.getPlayers(), new DataOutputStream(output));
+		Util.objectToStream(playerModel.getPlayers(), new DataOutputStream(output));
 	}
 
 	@SuppressWarnings("unchecked")
@@ -65,7 +72,7 @@ public class NetworkPlayers extends ReceiverAdapter {
 	public void setState(InputStream input) throws Exception {
 		List<Player> players;
 		players = (List<Player>) Util.objectFromStream(new DataInputStream(input));
-		playerManager.setPlayers(players);
+		playerModel.setPlayers(players);
 		for(Player player : players) {
 			firePlayerEntered(new NetworkEvent(this, player));
 		}
@@ -82,19 +89,16 @@ public class NetworkPlayers extends ReceiverAdapter {
 		if (message instanceof NCPlayerEnteringGame) {
 			NCPlayerEnteringGame nc = (NCPlayerEnteringGame)message;
 			Player player = nc.getPlayer();
-			playerManager.addPlayer(player);
 			firePlayerEntered(new NetworkEvent(this, player));
 
 		} else if (message instanceof NCPlayerExitingGame) {
 			NCPlayerExitingGame nc = (NCPlayerExitingGame)message;
 			Player player = nc.getPlayer();
-			playerManager.removePlayer(player);
 			firePlayerExited(new NetworkEvent(this, player));
 
 		} else if (message instanceof NCPlayerUpdated) {
 			NCPlayerUpdated nc = (NCPlayerUpdated)message;
 			Player player = nc.getPlayer();
-			playerManager.updatePlayer(player);
 			firePlayerUpdated(new NetworkEvent(this, player, nc.getCommands()));
 		}
 	}

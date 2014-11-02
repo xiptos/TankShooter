@@ -3,6 +3,7 @@ package pt.ipb.tankshooter.net;
 import java.util.EventObject;
 import java.util.List;
 
+import pt.ipb.tankshooter.model.Player;
 import pt.ipb.tankshooter.net.NCPlayerUpdated.COMMAND;
 
 @SuppressWarnings("serial")

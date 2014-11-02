@@ -3,6 +3,8 @@ package pt.ipb.tankshooter.net;
 import java.io.Serializable;
 import java.util.List;
 
+import pt.ipb.tankshooter.model.Player;
+
 @SuppressWarnings("serial")
 public class NCPlayerUpdated implements Serializable {
 	public enum COMMAND { TURN_RIGHT, TURN_LEFT, FW, STOP_TURN_RIGHT, STOP_TURN_LEFT, STOP, FIRE, BACK }

@@ -1,4 +1,4 @@
-package pt.ipb.tankshooter.net;
+package pt.ipb.tankshooter;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -8,6 +8,8 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.table.TableModel;
+
+import pt.ipb.tankshooter.net.PlayersIconCellRenderer;
 
 @SuppressWarnings("serial")
 public class PlayersPanel extends JPanel {

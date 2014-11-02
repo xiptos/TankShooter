@@ -3,7 +3,7 @@ package pt.ipb.tankshooter;
 import pt.ipb.game.engine.Entity;
 import pt.ipb.game.engine.Sprite;
 import pt.ipb.game.engine.SpriteEntity;
-import pt.ipb.tankshooter.net.Player;
+import pt.ipb.tankshooter.model.Player;
 
 public class TankEntity extends SpriteEntity {
 	/** The game in which the ship exists */

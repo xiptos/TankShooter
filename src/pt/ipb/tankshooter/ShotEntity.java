@@ -3,7 +3,7 @@ package pt.ipb.tankshooter;
 import java.awt.image.BufferedImage;
 
 import pt.ipb.game.engine.Entity;
-import pt.ipb.tankshooter.net.Player;
+import pt.ipb.tankshooter.model.Player;
 
 /**
  * An entity representing a shot fired by the player's ship

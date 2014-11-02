@@ -2,6 +2,8 @@ package pt.ipb.tankshooter.net;
 
 import java.io.Serializable;
 
+import pt.ipb.tankshooter.model.Player;
+
 @SuppressWarnings("serial")
 public class NCPlayerExitingGame implements Serializable {
 	

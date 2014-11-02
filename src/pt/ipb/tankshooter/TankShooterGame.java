@@ -15,11 +15,11 @@ import pt.ipb.game.engine.Game;
 import pt.ipb.game.engine.GameContainer;
 import pt.ipb.game.engine.Sprite;
 import pt.ipb.game.engine.SpriteSheet;
-import pt.ipb.tankshooter.net.NetworkEvent;
-import pt.ipb.tankshooter.net.NetworkListener;
-import pt.ipb.tankshooter.net.Player;
+import pt.ipb.tankshooter.model.Player;
+import pt.ipb.tankshooter.model.PlayerEvent;
+import pt.ipb.tankshooter.model.PlayerListener;
 
-public class TankShooterGame implements Game, NetworkListener {
+public class TankShooterGame implements Game, PlayerListener {
 	/** The speed at which the player's ship should move (pixels/sec) */
 	public static final double SHOT_SPEED = 300;
 	/** The speed at which the player's ship should move (pixels/sec) */
@@ -197,22 +197,23 @@ public class TankShooterGame implements Game, NetworkListener {
 		removeEntity(tank);
 	}
 
+	public boolean isPlaying() {
+		return playing;
+	}
+
 	@Override
-	public void playerEntered(NetworkEvent e) {
+	public void playerEntered(PlayerEvent e) {
 		addTank(e.getPlayer());
 	}
 
 	@Override
-	public void playerExited(NetworkEvent e) {
-		removeTank(e.getPlayer());
+	public void playerExited(PlayerEvent e) {
+		removeEntity(getTank(e.getPlayer()));
 	}
 
 	@Override
-	public void playerUpdated(NetworkEvent e) {
-	}
-
-	public boolean isPlaying() {
-		return playing;
+	public void playerSelected(PlayerEvent e) {
+		setTank(getTank(e.getPlayer()));
 	}
 
 }

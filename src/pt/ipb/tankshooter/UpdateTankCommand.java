@@ -1,7 +1,7 @@
 package pt.ipb.tankshooter;
 
 import pt.ipb.game.engine.Command;
-import pt.ipb.tankshooter.net.Player;
+import pt.ipb.tankshooter.model.Player;
 
 public class UpdateTankCommand implements Command {
 	TankEntity tank;
