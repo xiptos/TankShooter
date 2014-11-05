@@ -131,7 +131,7 @@ public class TankShooter implements KeyListener {
 			public void done() {
 				try {
 					Player player = get();
-					
+
 					playerModel.playerSpawned(player);
 					networkPlayers.spawn(player);
 

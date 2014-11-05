@@ -64,7 +64,7 @@ public class Player implements Serializable {
 
 	@Override
 	public String toString() {
-		return getId() + " - " + getX() + "," + getY() + " - " + getAngle();
+		return getId();
 	}
 
 	public void incPoints() {
