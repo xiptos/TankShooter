@@ -6,8 +6,6 @@ public interface PlayerModel {
 
 	List<Player> getPlayers();
 
-	Player getSelectedPlayer();
-
 	int getIndexOf(Player player);
 
 	int getPlayerCount();

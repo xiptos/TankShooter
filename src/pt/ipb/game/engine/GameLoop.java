@@ -20,7 +20,7 @@ public class GameLoop {
 	 * Constructs the default game loop.
 	 */
 	public GameLoop() {
-		this(1.0 / 60.0);
+		this(10.0 / 600.0);
 	}
 
 	/**
@@ -41,7 +41,7 @@ public class GameLoop {
 	 *            maximum time between updates.
 	 */
 	public GameLoop(double minDelta, double maxDelta) {
-		this(minDelta, maxDelta, 0.5, 0.5);
+		this(minDelta, maxDelta, 500, 500);
 	}
 
 	/**

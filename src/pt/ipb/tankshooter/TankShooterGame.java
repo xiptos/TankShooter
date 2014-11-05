@@ -46,8 +46,10 @@ public class TankShooterGame implements Game, PlayerListener {
 	private int height;
 	private SpriteSheet explosion1Sheet;
 	private SpriteSheet explosion2Sheet;
+	private TankShooter tankShooter;
 
-	public TankShooterGame(int width, int height, Image background) {
+	public TankShooterGame(TankShooter tankShooter, int width, int height, Image background) {
+		this.tankShooter = tankShooter;
 		this.background = background;
 		this.width = width;
 		this.height = height;
@@ -122,9 +124,9 @@ public class TankShooterGame implements Game, PlayerListener {
 
 	}
 
-	public void notifyDeath() {
-		playing = false;
-		System.out.println("Oh não... fui atingido!");
+	public void notifyDeath(Player player) {
+		System.out.println(player+" - Oh não... fui atingido!");
+		tankShooter.notifyDeath(player);
 	}
 
 	public void removeEntity(Entity entity) {
@@ -132,7 +134,6 @@ public class TankShooterGame implements Game, PlayerListener {
 	}
 
 	public void notifyTankKilled(Player tank, Player shooter) {
-		System.out.println("Tank killed...");
 		addExplosion(tank);
 		shooter.incPoints();
 	}
@@ -188,9 +189,12 @@ public class TankShooterGame implements Game, PlayerListener {
 	}
 
 	public void addTank(Player player) {
+		if(player.getNum()<0) {
+			player.setNum(entities.size());
+		}
 		Sprite[] tankSprites = new Sprite[8];
 		for (int i = 0; i < 8; i++) {
-			tankSprites[i] = tankSheet.getSprite(i, entities.size());
+			tankSprites[i] = tankSheet.getSprite(i, player.getNum());
 		}
 
 		TankEntity tank = new TankEntity(player, this, tankSprites, player.getX(), player.getY());
@@ -199,16 +203,17 @@ public class TankShooterGame implements Game, PlayerListener {
 	}
 
 	public void setTank(TankEntity tank) {
-		playing = true;
 		this.tank = tank;
 	}
 
 	public TankEntity getTank(Player player) {
-		for (Entity entity : entities) {
-			if (entity instanceof TankEntity) {
-				TankEntity tank = (TankEntity) entity;
-				if (player.getId().equals(tank.getId())) {
-					return tank;
+		if (player != null) {
+			for (Entity entity : entities) {
+				if (entity instanceof TankEntity) {
+					TankEntity tank = (TankEntity) entity;
+					if (player.getId().equals(tank.getId())) {
+						return tank;
+					}
 				}
 			}
 		}
@@ -229,6 +234,10 @@ public class TankShooterGame implements Game, PlayerListener {
 		removeEntity(tank);
 	}
 
+	public void setPlaying(boolean playing) {
+		this.playing = playing;
+	}
+	
 	public boolean isPlaying() {
 		return playing;
 	}
@@ -244,8 +253,16 @@ public class TankShooterGame implements Game, PlayerListener {
 	}
 
 	@Override
-	public void playerSelected(PlayerEvent e) {
+	public void playerSpawned(PlayerEvent e) {
+		addTank(e.getPlayer());
 		setTank(getTank(e.getPlayer()));
+		playing = true;
+	}
+
+	@Override
+	public void playerDied(PlayerEvent e) {
+		playing = false;
+		removeEntity(getTank(e.getPlayer()));
 	}
 
 }

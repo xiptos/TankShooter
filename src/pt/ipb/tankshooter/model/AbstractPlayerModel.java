@@ -17,11 +17,20 @@ public abstract class AbstractPlayerModel implements PlayerModel {
 		listenerList.remove(PlayerListener.class, l);
 	}
 
-	protected void firePlayerSelected(PlayerEvent e) {
+	protected void firePlayerDied(PlayerEvent e) {
 		Object[] listeners = listenerList.getListenerList();
 		for (int i = listeners.length - 2; i >= 0; i -= 2) {
 			if (listeners[i] == PlayerListener.class) {
-				((PlayerListener) listeners[i + 1]).playerSelected(e);;
+				((PlayerListener) listeners[i + 1]).playerDied(e);;
+			}
+		}
+	}
+
+	protected void firePlayerSpawned(PlayerEvent e) {
+		Object[] listeners = listenerList.getListenerList();
+		for (int i = listeners.length - 2; i >= 0; i -= 2) {
+			if (listeners[i] == PlayerListener.class) {
+				((PlayerListener) listeners[i + 1]).playerSpawned(e);;
 			}
 		}
 	}

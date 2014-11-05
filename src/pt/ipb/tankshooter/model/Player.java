@@ -9,20 +9,23 @@ public class Player implements Serializable {
 	double y;
 	double angle;
 	int points;
+	boolean alive = true;
+	int num;
 
 	public Player(String id) {
 		this.id = id;
+		this.num = -1;
 	}
 
 	@Override
 	public boolean equals(Object obj) {
-		if(obj instanceof Player) {
+		if (obj instanceof Player) {
 			Player other = (Player) obj;
 			return getId().equals(other.getId());
 		}
 		return false;
 	}
-	
+
 	public String getId() {
 		return id;
 	}
@@ -61,10 +64,26 @@ public class Player implements Serializable {
 
 	@Override
 	public String toString() {
-		return getId()+" - "+getX()+","+getY()+" - "+getAngle();
+		return getId() + " - " + getX() + "," + getY() + " - " + getAngle();
 	}
 
 	public void incPoints() {
 		this.points++;
+	}
+
+	public void setAlive(boolean alive) {
+		this.alive = alive;
+	}
+
+	public boolean isAlive() {
+		return alive;
+	}
+
+	public int getNum() {
+		return num;
+	}
+
+	public void setNum(int num) {
+		this.num = num;
 	}
 }

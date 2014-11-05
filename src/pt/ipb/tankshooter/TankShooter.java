@@ -36,6 +36,7 @@ public class TankShooter implements KeyListener {
 	private NetInputHandler netInputHandler;
 	protected KeyInputHandler keyInputHandler;
 	protected Player player;
+	protected KeyBasedNetCommandGenerator netCommandGenerator;
 
 	public TankShooter() {
 		try {
@@ -53,7 +54,7 @@ public class TankShooter implements KeyListener {
 
 		int backPattern = new Random().nextInt(3);
 		Image background = ImageIO.read(ClassLoader.getSystemResource(BACKGROUND + backPattern + ".png"));
-		game = new TankShooterGame(WIDTH, HEIGHT, background);
+		game = new TankShooterGame(this, WIDTH, HEIGHT, background);
 		playerModel.addPlayerListener(game);
 
 		gameContainer = new PaneledGameContainer(WIDTH, HEIGHT);
@@ -80,6 +81,16 @@ public class TankShooter implements KeyListener {
 			public void playerEntered(NetworkEvent e) {
 				playerModel.addPlayer(e.getPlayer());
 			}
+
+			@Override
+			public void playerSpawned(NetworkEvent e) {
+				playerModel.playerSpawned(e.getPlayer());
+			}
+
+			@Override
+			public void playerDied(NetworkEvent e) {
+				playerModel.playerDied(e.getPlayer());
+			}
 		});
 
 		netInputHandler = new NetInputHandler(game);
@@ -92,6 +103,7 @@ public class TankShooter implements KeyListener {
 
 	private void initPlayer() throws Exception {
 		SwingWorker<Player, Void> worker = new SwingWorker<Player, Void>() {
+
 			@Override
 			public Player doInBackground() {
 				if (player == null) {
@@ -103,6 +115,14 @@ public class TankShooter implements KeyListener {
 					player = new Player(name);
 					player.setX(10);
 					player.setY(50 + 50 * playerModel.getPlayerCount());
+					
+					playerModel.addPlayer(player);
+					try {
+						networkPlayers.enterGame(player);
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+
 				}
 				return player;
 			}
@@ -111,17 +131,16 @@ public class TankShooter implements KeyListener {
 			public void done() {
 				try {
 					Player player = get();
-
-					playerModel.addPlayer(player);
-					playerModel.setSelectedPlayer(player);
-					networkPlayers.enterGame(player);
+					
+					playerModel.playerSpawned(player);
+					networkPlayers.spawn(player);
 
 					keyInputHandler = new KeyInputHandler(game, game.getTank(player));
+					gameContainer.addKeyListener(keyInputHandler);
 					gameContainer.addInputHandler(keyInputHandler);
 
-					gameContainer.addKeyListener(keyInputHandler);
-					gameContainer.addKeyListener(new KeyBasedNetCommandGenerator(game, game.getTank(player),
-							networkPlayers));
+					netCommandGenerator = new KeyBasedNetCommandGenerator(game, game.getTank(player), networkPlayers);
+					gameContainer.addKeyListener(netCommandGenerator);
 
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -195,6 +214,26 @@ public class TankShooter implements KeyListener {
 			} catch (Exception e1) {
 				e1.printStackTrace();
 			}
+		}
+	}
+
+	public void notifyDeath(Player player) {
+		if (this.player.equals(player)) {
+			// try {
+			// networkPlayers.exitGame(player);
+			// } catch (Exception e) {
+			// e.printStackTrace();
+			// }
+			playerModel.playerDied(player);
+			try {
+				networkPlayers.playerDied(player);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+
+			gameContainer.removeInputHandler(keyInputHandler);
+			gameContainer.removeKeyListener(keyInputHandler);
+			gameContainer.removeKeyListener(netCommandGenerator);
 		}
 	}
 

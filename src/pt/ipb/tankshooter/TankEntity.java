@@ -94,10 +94,8 @@ public class TankEntity extends SpriteEntity {
 	 * @param other The entity with which the ship has collided
 	 */
 	public void collidedWith(Entity other) {
-		// if its an alien, notify the game that the player
-		// is dead
 		if (other instanceof ShotEntity) {
-			game.notifyDeath();
+			game.notifyDeath(this.getPlayer());
 		} else if(other instanceof TankEntity) {
 			setSpeed(-getSpeed());
 		}

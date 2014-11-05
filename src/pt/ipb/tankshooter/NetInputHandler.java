@@ -81,4 +81,12 @@ public class NetInputHandler implements NetworkListener, InputHandler {
 			}
 		}
 	}
+
+	@Override
+	public void playerSpawned(NetworkEvent e) {
+	}
+
+	@Override
+	public void playerDied(NetworkEvent e) {
+	}
 }
