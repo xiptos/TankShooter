@@ -35,6 +35,16 @@ public abstract class AbstractPlayerModel implements PlayerModel {
 		}
 	}
 
+	protected void firePlayerUpdated(PlayerEvent e) {
+		Object[] listeners = listenerList.getListenerList();
+		for (int i = listeners.length - 2; i >= 0; i -= 2) {
+			if (listeners[i] == PlayerListener.class) {
+				((PlayerListener) listeners[i + 1]).playerUpdated(e);;
+			}
+		}
+	}
+
+
 	protected void firePlayerEntered(PlayerEvent e) {
 		Object[] listeners = listenerList.getListenerList();
 		for (int i = listeners.length - 2; i >= 0; i -= 2) {

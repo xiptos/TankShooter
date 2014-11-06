@@ -7,4 +7,5 @@ public interface PlayerListener extends EventListener {
 	void playerExited(PlayerEvent e);
 	void playerSpawned(PlayerEvent e);
 	void playerDied(PlayerEvent e);
+	void playerUpdated(PlayerEvent e);
 }

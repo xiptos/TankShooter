@@ -92,4 +92,9 @@ public class PlayersTableModel extends AbstractTableModel implements PlayerListe
 	public void playerDied(PlayerEvent e) {
 		fireTableDataChanged();
 	}
+
+	@Override
+	public void playerUpdated(PlayerEvent e) {
+		fireTableDataChanged();
+	}
 }

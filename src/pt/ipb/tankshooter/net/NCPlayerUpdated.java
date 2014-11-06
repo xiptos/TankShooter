@@ -7,7 +7,7 @@ import pt.ipb.tankshooter.model.Player;
 
 @SuppressWarnings("serial")
 public class NCPlayerUpdated implements Serializable {
-	public enum COMMAND { TURN_RIGHT, TURN_LEFT, FW, STOP_TURN_RIGHT, STOP_TURN_LEFT, STOP, FIRE, BACK }
+	public enum COMMAND { TURN_RIGHT, TURN_LEFT, FW, STOP_TURN_RIGHT, STOP_TURN_LEFT, STOP, FIRE, BACK, POINTS }
 	List<COMMAND> commands;
 	Player player;
 	

@@ -136,6 +136,7 @@ public class TankShooterGame implements Game, PlayerListener {
 	public void notifyTankKilled(Player tank, Player shooter) {
 		addExplosion(tank);
 		shooter.incPoints();
+//		tankShooter.notifyKill(tank, shooter);
 	}
 
 	public void tryToFire(TankEntity tank) {
@@ -203,7 +204,6 @@ public class TankShooterGame implements Game, PlayerListener {
 	}
 
 	public void setTank(TankEntity tank) {
-		System.out.println("Setting tank to " + tank.getPlayer());
 		this.tank = tank;
 	}
 
@@ -265,6 +265,10 @@ public class TankShooterGame implements Game, PlayerListener {
 			playing = false;
 		}
 		removeEntity(getTank(e.getPlayer()));
+	}
+
+	@Override
+	public void playerUpdated(PlayerEvent e) {
 	}
 
 }

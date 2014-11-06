@@ -4,6 +4,7 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,6 +20,7 @@ import org.jgroups.util.Util;
 
 import pt.ipb.tankshooter.model.DefaultPlayerModel;
 import pt.ipb.tankshooter.model.Player;
+import pt.ipb.tankshooter.net.NCPlayerUpdated.COMMAND;
 
 public class NetworkPlayers extends ReceiverAdapter {
 	private static final String CLUSTER = "TankShooter";
@@ -132,6 +134,13 @@ public class NetworkPlayers extends ReceiverAdapter {
 			NCPlayerDied nc = (NCPlayerDied) message;
 			Player player = nc.getPlayer();
 			firePlayerDied(new NetworkEvent(this, player));
+
+		} else if (message instanceof NCKilledPlayer) {
+			NCKilledPlayer nc = (NCKilledPlayer) message;
+			Player shooter = nc.getShooter();
+			List<COMMAND> l = new ArrayList<>();
+			l.add(COMMAND.POINTS);
+			firePlayerUpdated(new NetworkEvent(this, shooter, l));
 		}
 	}
 
@@ -198,6 +207,10 @@ public class NetworkPlayers extends ReceiverAdapter {
 
 	public String getClusterName() {
 		return CLUSTER + clusterNum;
+	}
+
+	public void killed(Player tank, Player shooter) throws Exception {
+		channel.send(null, new NCKilledPlayer(tank, shooter));
 	}
 
 }

@@ -63,4 +63,14 @@ public class DefaultPlayerModel extends AbstractPlayerModel {
 		firePlayerDied(new PlayerEvent(this, player));
 	}
 
+	public void playerUpdated(Player player) {
+		int index = playerList.indexOf(player);
+		if(index <0) {
+			return;
+		}
+		Player toUpdate = playerList.get(index);
+		toUpdate.setPoints(player.getPoints());
+		firePlayerUpdated(new PlayerEvent(this, toUpdate));
+	}
+
 }

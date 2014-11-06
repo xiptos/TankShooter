@@ -70,6 +70,7 @@ public class TankShooter implements KeyListener {
 
 			@Override
 			public void playerUpdated(NetworkEvent e) {
+				playerModel.playerUpdated(e.getPlayer());
 			}
 
 			@Override
@@ -91,6 +92,7 @@ public class TankShooter implements KeyListener {
 			public void playerDied(NetworkEvent e) {
 				playerModel.playerDied(e.getPlayer());
 			}
+
 		});
 
 		netInputHandler = new NetInputHandler(game);
@@ -234,6 +236,14 @@ public class TankShooter implements KeyListener {
 			gameContainer.removeInputHandler(keyInputHandler);
 			gameContainer.removeKeyListener(keyInputHandler);
 			gameContainer.removeKeyListener(netCommandGenerator);
+		}
+	}
+
+	public void notifyKill(Player tank, Player shooter) {
+		try {
+			networkPlayers.killed(tank, shooter);
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
 

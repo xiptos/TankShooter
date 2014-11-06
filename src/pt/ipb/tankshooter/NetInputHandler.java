@@ -76,6 +76,7 @@ public class NetInputHandler implements NetworkListener, InputHandler {
 					commandList.add(new FireCommand(game, tank));
 					;
 					break;
+				case POINTS: break;
 
 				}
 			}
@@ -89,4 +90,5 @@ public class NetInputHandler implements NetworkListener, InputHandler {
 	@Override
 	public void playerDied(NetworkEvent e) {
 	}
+
 }
