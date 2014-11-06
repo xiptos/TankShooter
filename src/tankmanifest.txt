@@ -1,0 +1,5 @@
+Permissions: sandbox
+Codebase: titan.ipb.pt
+Application-Name: Tank Shooter
+Main-Class: pt.ipb.tankshooter.TankShooter
+Class-Path: jgroups-3.6.0.Final.jar
