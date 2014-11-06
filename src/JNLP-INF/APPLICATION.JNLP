@@ -1,25 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<jnlp spec="1.0+" codebase=
-"https://titan.ipb.pt/~rlopes/tank" 
-    href="tank_webstart.jnlp">
-    <information>
-        <title>Tank Shooter</title>
-        <vendor>Rui Lopes</vendor>
-    </information>
-    <resources>
-        <!-- Application Resources -->
-        <j2se version="1.7+"
-              href="http://java.sun.com/products/autodl/j2se"/>
-        <jar href="tankshooter.jar" main="true" />
-        <jar href="jgroups-3.6.0.Final.jar"/>
+<jnlp spec="1.0+" codebase="https://titan.ipb.pt/~rlopes/tank"
+	href="tank_webstart.jnlp">
+	<information>
+		<title>Tank Shooter</title>
+		<vendor>Rui Lopes</vendor>
+	</information>
+	<resources>
+		<!-- Application Resources -->
+		<j2se version="1.7+" href="http://java.sun.com/products/autodl/j2se" java-vm-args="-Djava.net.preferIPv4Stack=true"/>
+		<jar href="tankshooter.jar" main="true" />
+		<jar href="jgroups-3.6.0.Final.jar" />
 
-    </resources>
-    <application-desc
-         name="Tank Shooter"
-         main-class=
-           "pt.ipb.tankshooter.TankShooter"
-         width="1024"
-         height="600">
-     </application-desc>
-     <update check="background"/>
+	</resources>
+	<application-desc name="Tank Shooter"
+		main-class="pt.ipb.tankshooter.TankShooter" width="1024" height="600">
+	</application-desc>
+	<security>
+		<all-permissions />
+	</security>
+	<update check="background" />
 </jnlp>  

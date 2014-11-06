@@ -53,7 +53,7 @@ public class TankShooter implements KeyListener {
 		playerModel = new DefaultPlayerModel();
 
 		int backPattern = new Random().nextInt(3);
-		Image background = ImageIO.read(ClassLoader.getSystemResource(BACKGROUND + backPattern + ".png"));
+		Image background = ImageIO.read(TankShooter.class.getClassLoader().getResourceAsStream(BACKGROUND + backPattern + ".png"));
 		game = new TankShooterGame(this, WIDTH, HEIGHT, background);
 		playerModel.addPlayerListener(game);
 

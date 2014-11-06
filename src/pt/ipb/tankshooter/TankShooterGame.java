@@ -59,7 +59,7 @@ public class TankShooterGame implements Game, PlayerListener {
 		explosion2Sheet = new SpriteSheet("pt/ipb/tankshooter/resources/explosion17.png", 64, 8);
 		try {
 			shotImage = ImageIO.read(this.getClass().getClassLoader()
-					.getResource("pt/ipb/tankshooter/resources/shot.gif"));
+					.getResourceAsStream("pt/ipb/tankshooter/resources/shot.gif"));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

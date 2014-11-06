@@ -16,6 +16,7 @@ import org.jgroups.JChannel;
 import org.jgroups.Message;
 import org.jgroups.ReceiverAdapter;
 import org.jgroups.View;
+import org.jgroups.stack.ProtocolStack;
 import org.jgroups.util.Util;
 
 import pt.ipb.tankshooter.model.DefaultPlayerModel;
@@ -36,7 +37,10 @@ public class NetworkPlayers extends ReceiverAdapter {
 	}
 
 	public void start() throws Exception {
-		channel = new JChannel("etc/protocol.xml");
+		channel = new JChannel(false);
+		ProtocolStack stack = StackFactory.getProtocolStack();
+		channel.setProtocolStack(stack);
+        stack.init();     
 
 		while (true) {
 			channel.connect(CLUSTER + clusterNum);
