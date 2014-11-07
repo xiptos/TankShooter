@@ -1,12 +1,9 @@
 package pt.ipb.game.engine;
 
-import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 
 import javax.imageio.ImageIO;
-
-import pt.ipb.tankshooter.TankShooter;
 
 /**
  * This class represents a sprite sheet.

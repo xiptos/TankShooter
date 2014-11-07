@@ -8,7 +8,7 @@ public class DefaultPlayerModel extends AbstractPlayerModel {
 	List<Player> playerList;
 	
 	public DefaultPlayerModel() {
-		playerList = Collections.synchronizedList(new ArrayList<>());
+		playerList = Collections.synchronizedList(new ArrayList<Player>());
 	}
 
 	public void addPlayer(Player player) {
